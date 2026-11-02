@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -106,6 +107,9 @@ export default {
     title: 'Orders',
     description: 'View and manage customer orders',
     allOrders: 'All Orders',
+    submittedOrders: 'Submitted Restocking Orders',
+    noSubmittedOrders: 'No restocking orders have been submitted yet.',
+    daysCount: '{count} days',
     totalOrders: 'Total Orders',
     totalRevenue: 'Total Revenue',
     avgOrderValue: 'Avg Order Value',
@@ -125,7 +129,10 @@ export default {
       totalValue: 'Total Value',
       status: 'Status',
       expectedDelivery: 'Expected Delivery',
-      actualDelivery: 'Actual Delivery'
+      actualDelivery: 'Actual Delivery',
+      submittedDate: 'Submitted',
+      leadTime: 'Lead Time',
+      totalCost: 'Total Cost'
     }
   },
 
@@ -185,6 +192,45 @@ export default {
       change: 'Change',
       trend: 'Trend',
       period: 'Period'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    subtitle: 'Choose a budget and review recommended purchases based on forecasted demand gaps',
+    budget: 'Budget',
+    budgetSlider: 'Restocking budget',
+    spent: 'Spent',
+    remaining: 'Remaining',
+    recommendedItems: 'Recommended Items',
+    empty: 'No items fit within the current budget. Increase the budget to see recommendations.',
+    placeOrder: 'Place Order',
+    table: {
+      item: 'Item',
+      trend: 'Trend',
+      quantity: 'Quantity',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTime: 'Lead Time'
+    },
+    days: '{count} days',
+    confirm: {
+      title: 'Confirm Restocking Order',
+      summary: 'Review the items below before submitting.',
+      total: 'Total Cost',
+      leadTime: 'Overall Lead Time',
+      submit: 'Confirm Order',
+      submitting: 'Submitting...'
+    },
+    success: {
+      title: 'Order submitted',
+      message: 'Order {orderNumber} was submitted. Lead time: {days} days.',
+      viewOrders: 'View submitted orders'
+    },
+    errors: {
+      load: 'Failed to load demand forecasts',
+      submit: 'Failed to submit the order'
     }
   },
 
