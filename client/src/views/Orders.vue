@@ -75,14 +75,52 @@
         </div>
       </div>
     </div>
+
+    <div id="submitted-orders" class="card submitted-card">
+      <div class="card-header">
+        <h3 class="card-title">{{ t('orders.submittedOrders') }} ({{ submittedOrders.length }})</h3>
+      </div>
+      <div v-if="submittedError" class="error">{{ submittedError }}</div>
+      <div v-else-if="submittedOrders.length === 0" class="empty-note">{{ t('orders.noSubmittedOrders') }}</div>
+      <div v-else class="table-container">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th class="col-order-number">{{ t('orders.table.orderNumber') }}</th>
+              <th class="col-sub-items">{{ t('orders.table.items') }}</th>
+              <th class="col-value">{{ t('orders.table.totalCost') }}</th>
+              <th class="col-date">{{ t('orders.table.submittedDate') }}</th>
+              <th class="col-date">{{ t('orders.table.expectedDelivery') }}</th>
+              <th class="col-value">{{ t('orders.table.leadTime') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="order in submittedOrders" :key="order.id">
+              <td class="col-order-number"><strong>{{ order.order_number }}</strong></td>
+              <td class="col-sub-items">
+                <div v-for="item in order.items" :key="item.item_sku" class="sub-item">
+                  {{ translateProductName(item.item_name) }} x {{ item.quantity }}
+                </div>
+              </td>
+              <td class="col-value"><strong>{{ formatCurrency(order.total_cost, currentCurrency) }}</strong></td>
+              <td class="col-date">{{ formatDate(order.submitted_date) }}</td>
+              <td class="col-date">{{ formatDate(order.expected_delivery) }}</td>
+              <td class="col-value">{{ t('orders.daysCount', { count: order.lead_time_days }) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, nextTick } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { formatCurrency } from '../utils/currency'
+import { useRoute } from 'vue-router'
 
 export default {
   name: 'Orders',
@@ -95,6 +133,11 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const route = useRoute()
+
+    // Submitted restocking orders: independent of global filters and main table errors
+    const submittedOrders = ref([])
+    const submittedError = ref(null)
 
     // Use shared filters
     const {
@@ -153,7 +196,26 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    const loadSubmittedOrders = async () => {
+      try {
+        submittedError.value = null
+        submittedOrders.value = await api.getSubmittedOrders()
+      } catch (err) {
+        // Isolated failure: the main orders table is unaffected
+        console.error('Failed to load submitted orders:', err)
+        submittedError.value = 'Failed to load submitted orders: ' + err.message
+      }
+    }
+
+    onMounted(async () => {
+      // Load both in parallel; each handles its own errors
+      await Promise.all([loadOrders(), loadSubmittedOrders()])
+      // The section lives outside the loading wrapper, so it exists after data loads
+      if (route.hash === '#submitted-orders') {
+        await nextTick()
+        document.getElementById('submitted-orders')?.scrollIntoView({ behavior: 'smooth' })
+      }
+    })
 
     return {
       t,
@@ -165,7 +227,11 @@ export default {
       formatDate,
       currencySymbol,
       translateProductName,
-      translateCustomerName
+      translateCustomerName,
+      submittedOrders,
+      submittedError,
+      formatCurrency,
+      currentCurrency
     }
   }
 }
@@ -201,6 +267,26 @@ export default {
 
 .col-value {
   width: 120px;
+}
+
+.col-sub-items {
+  width: 260px;
+}
+
+.submitted-card {
+  margin-top: 1.5rem;
+}
+
+.sub-item {
+  font-size: 0.875rem;
+  color: #0f172a;
+  padding: 0.125rem 0;
+}
+
+.empty-note {
+  padding: 1.5rem;
+  color: #64748b;
+  font-size: 0.875rem;
 }
 
 /* Items details styling */

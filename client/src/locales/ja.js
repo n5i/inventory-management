@@ -6,6 +6,7 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充発注',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -106,6 +107,9 @@ export default {
     title: '注文',
     description: '顧客注文の表示と管理',
     allOrders: 'すべての注文',
+    submittedOrders: '送信済み補充発注',
+    noSubmittedOrders: '送信済みの補充発注はまだありません。',
+    daysCount: '{count}日',
     totalOrders: '総注文数',
     totalRevenue: '総収益',
     avgOrderValue: '平均注文額',
@@ -125,7 +129,10 @@ export default {
       totalValue: '合計金額',
       status: 'ステータス',
       expectedDelivery: '予定配達日',
-      actualDelivery: '実際の配達日'
+      actualDelivery: '実際の配達日',
+      submittedDate: '送信日',
+      leadTime: 'リードタイム',
+      totalCost: '合計コスト'
     }
   },
 
@@ -185,6 +192,45 @@ export default {
       change: '変化',
       trend: 'トレンド',
       period: '期間'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充発注',
+    subtitle: '予算を設定し、需要予測のギャップに基づく推奨発注を確認します',
+    budget: '予算',
+    budgetSlider: '補充予算',
+    spent: '使用額',
+    remaining: '残額',
+    recommendedItems: '推奨品目',
+    empty: '現在の予算に収まる品目がありません。予算を増やすと推奨が表示されます。',
+    placeOrder: '発注する',
+    table: {
+      item: '品目',
+      trend: 'トレンド',
+      quantity: '数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTime: 'リードタイム'
+    },
+    days: '{count}日',
+    confirm: {
+      title: '補充発注の確認',
+      summary: '送信前に以下の品目をご確認ください。',
+      total: '合計金額',
+      leadTime: '全体のリードタイム',
+      submit: '発注を確定',
+      submitting: '送信中...'
+    },
+    success: {
+      title: '発注を送信しました',
+      message: '注文 {orderNumber} を送信しました。リードタイム: {days}日',
+      viewOrders: '送信済み注文を表示'
+    },
+    errors: {
+      load: '需要予測の読み込みに失敗しました',
+      submit: '発注の送信に失敗しました'
     }
   },
 
